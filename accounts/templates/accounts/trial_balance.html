@@ -1,0 +1,53 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+<div class="card shadow">
+    <div class="card-header bg-dark text-white d-flex justify-content-between">
+        <h4 class="mb-0">Trial Balance</h4>
+        <span>{% now "jS F Y" %}</span>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered table-striped">
+            <thead class="table-light">
+                <tr>
+                    <th>Code</th>
+                    <th>Account Name</th>
+                    <th class="text-end">Debit</th>
+                    <th class="text-end">Credit</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for acct in accounts %}
+                <tr>
+                    <td>{{ acct.code }}</td>
+                    <td>{{ acct.name }}</td>
+                    <td class="text-end">
+                        {% if acct.debit > 0 %}{{ acct.debit|floatformat:2 }}{% endif %}
+                    </td>
+                    <td class="text-end">
+                        {% if acct.credit > 0 %}{{ acct.credit|floatformat:2 }}{% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot class="table-group-divider fw-bold">
+                <tr class="table-secondary">
+                    <td colspan="2" class="text-end">Totals:</td>
+                    <td class="text-end">{{ total_dr|floatformat:2 }}</td>
+                    <td class="text-end">{{ total_cr|floatformat:2 }}</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        {% if total_dr != total_cr %}
+        <div class="alert alert-danger text-center">
+            <strong>Warning:</strong> Trial Balance is out of balance!
+        </div>
+        {% else %}
+        <div class="alert alert-success text-center py-1">
+            Books are balanced.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

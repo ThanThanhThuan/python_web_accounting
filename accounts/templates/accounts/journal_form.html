@@ -1,0 +1,67 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h4>Record Journal Entry</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <!-- Parent Form (Date/Desc) -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            {{ form.date.label_tag }}
+                            {{ form.date }}
+                        </div>
+                        <div class="col-md-9">
+                            {{ form.description.label_tag }}
+                            {{ form.description }}
+                        </div>
+                    </div>
+
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                    {% endif %}
+
+                    <!-- Child Formset (Lines) -->
+                    <h5 class="mb-3">Journal Lines</h5>
+                    {{ items.management_form }}
+
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Account</th>
+                                <th>Debit</th>
+                                <th>Credit</th>
+                                <th>Delete?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item_form in items %}
+                            <tr>
+                                <td>{{ item_form.account }} {{ item_form.id }}</td>
+                                <td>{{ item_form.debit }}</td>
+                                <td>{{ item_form.credit }}</td>
+                                <td>{{ item_form.DELETE }}</td>
+                            </tr>
+                            {% if item_form.errors %}
+                            <tr>
+                                <td colspan="4" class="text-danger small">{{ item_form.errors }}</td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <button type="submit" class="btn btn-success">Post Entry</button>
+                    <a href="{% url 'journal_list' %}" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
